@@ -1,18 +1,13 @@
 class Module
-  def attribute arg, &block
-
-    var = arg.is_a?(Hash) ? arg.keys[0] : arg
+  def attribute(var, &block)
+    return attribute(var.keys[0]) {var.values[0]} if var.is_a? Hash
+    block = proc{nil} if block.nil?
 
     attr_accessor var
 
     define_method :initialize do
-      if arg.is_a?(Hash)
-        val = arg.values[0]
-      elsif block_given?
-        val = instance_eval &block
-      end
-
-      instance_variable_set("@#{var}", val) if defined? val
+      val = instance_eval &block
+      instance_variable_set("@#{var}", val)
     end
 
     define_method "#{var}?" do
@@ -20,6 +15,4 @@ class Module
     end
 
   end
-
-
 end
