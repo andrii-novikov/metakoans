@@ -1,26 +1,18 @@
 class Module
-  def attribute *args
+  def attribute arg
 
-    if args[0].is_a?(Hash)
-      variables = args[0].keys
+    var = arg.is_a?(Hash) ? arg.keys[0] : arg
+    val = arg.is_a?(Hash) ? arg.values[0] : nil
 
-      define_method :initialize do
-        args[0].each do |var,val|
-          instance_variable_set("@#{var}",val)
-        end
-      end
-    else
-      variables = args
+    attr_accessor var
+
+    define_method :initialize do
+      instance_variable_set("@#{var}", val)
     end
 
-    attr_accessor *variables
-
-    variables.each do |arg|
-      define_method "#{arg}?" do
-        instance_variable_get :"@#{arg}"
-      end
+    define_method "#{var}?" do
+      instance_variable_get :"@#{var}"
     end
-
 
   end
 
